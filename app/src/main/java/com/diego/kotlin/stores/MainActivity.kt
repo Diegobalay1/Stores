@@ -2,6 +2,7 @@ package com.diego.kotlin.stores
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.diego.kotlin.stores.databinding.ActivityMainBinding
 
@@ -16,6 +17,11 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
+        mBinding.btnSave.setOnClickListener {
+            val store = Store(name = mBinding.etName.text.toString().trim())
+            mAdapter.add(store)
+        }
 
         setupRecyclerView()
     }
