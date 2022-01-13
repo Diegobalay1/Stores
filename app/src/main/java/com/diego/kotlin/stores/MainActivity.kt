@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
         // que fragmento y en donde
         fragmentTransaction.add(R.id.containerMain, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()//para que se apliquen los cambios
 
         mBinding.fab.hide()
