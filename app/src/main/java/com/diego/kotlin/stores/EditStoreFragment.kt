@@ -1,7 +1,9 @@
 package com.diego.kotlin.stores
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.diego.kotlin.stores.databinding.FragmentEditStoreBinding
 import com.google.android.material.snackbar.Snackbar
@@ -50,17 +52,35 @@ class EditStoreFragment : Fragment() {
                 doAsync {
                     StoreApplication.database.storeDao().addStore(store)
                     uiThread {
+                        hideKeyboard()
                         Snackbar.make(mBinding.root,
                             getString(R.string.edit_store_message_save_success),
                             Snackbar.LENGTH_SHORT)
                             .show()
+                        mActivity?.onBackPressed()
                     }
                 }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-        //return super.onOptionsItemSelected(item)
+    }
+
+    private fun hideKeyboard() {
+        val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (view != null)
+            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+    }
+    private fun hideKeyboardBack() {
+        mActivity?.currentFocus?.let { view ->
+            val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    override fun onDestroyView() {
+        hideKeyboardBack()
+        super.onDestroyView()
     }
 
     override fun onDestroy() {
