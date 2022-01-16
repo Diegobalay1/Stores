@@ -42,7 +42,6 @@ class StoreAdapter(private var stores: MutableList<StoreEntity>, private var lis
         if (!stores.contains(storeEntity)) {
             stores.add(storeEntity)
             notifyItemInserted(stores.size-1)
-
         }
     }
 
