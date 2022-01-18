@@ -39,7 +39,8 @@ class EditStoreFragment : Fragment() {
             mIsEditMode = true
             getStore(id)
         } else {
-            Toast.makeText(activity, id.toString(), Toast.LENGTH_SHORT).show()
+            mIsEditMode = false
+            mStoreEntity = StoreEntity(name = "", phone = "", photoUrl = "")
         }
 
         mActivity = activity as? MainActivity
@@ -89,24 +90,38 @@ class EditStoreFragment : Fragment() {
                 true
             }
             R.id.action_save -> {
-                val store = StoreEntity(name = mBinding.etName.text.toString().trim(),
+                if (mStoreEntity != null) {
+                    /*val store = StoreEntity(name = mBinding.etName.text.toString().trim(),
                         phone = mBinding.etPhone.text.toString().trim(),
                         website = mBinding.etWebsite.text.toString().trim(),
-                        photoUrl = mBinding.etPhotoUrl.text.toString().trim())
+                        photoUrl = mBinding.etPhotoUrl.text.toString().trim())*/
+                    with(mStoreEntity!!){
+                        name = mBinding.etName.text.toString().trim()
+                        phone = mBinding.etPhone.text.toString().trim()
+                        website = mBinding.etWebsite.text.toString().trim()
+                        photoUrl = mBinding.etPhotoUrl.text.toString().trim()
+                    }
 
-                doAsync {
-                    store.id = StoreApplication.database.storeDao().addStore(store)
-                    uiThread {
-                        mActivity?.addStore(store)
+                    doAsync {
+                        if (mIsEditMode) StoreApplication.database.storeDao().updateStore(mStoreEntity!!) //actualizar
+                        else mStoreEntity!!.id = StoreApplication.database.storeDao().addStore(mStoreEntity!!)//almacenar nuevo dato
+                        uiThread {
+                            hideKeyboard()
+                            if (mIsEditMode){
+                                mActivity?.updateStore(mStoreEntity!!)
+                                Snackbar.make(mBinding.root,
+                                    R.string.edit_store_message_update_success,
+                                    Snackbar.LENGTH_SHORT).show()
+                            } else {
+                                mActivity?.addStore(mStoreEntity!!)
+                                Toast.makeText(
+                                    mActivity,
+                                    R.string.edit_store_message_save_success,
+                                    Toast.LENGTH_SHORT).show()
 
-                        hideKeyboard()
-
-                        Toast.makeText(mActivity,
-                            R.string.edit_store_message_save_success,
-                            Toast.LENGTH_SHORT)
-                            .show()
-
-                        mActivity?.onBackPressed()
+                                mActivity?.onBackPressed()
+                            }
+                        }
                     }
                 }
                 true
