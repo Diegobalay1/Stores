@@ -57,6 +57,11 @@ class EditStoreFragment : Fragment() {
                 .centerCrop()
                 .into(mBinding.imgPhoto)
         }
+
+        mBinding.etName.addTextChangedListener { validateFields(mBinding.tilName) }
+        mBinding.etPhone.addTextChangedListener { validateFields(mBinding.tilPhone) }
+        mBinding.etPhotoUrl.addTextChangedListener { validateFields(mBinding.tilPhotoUrl) }
+
     }
 
     private fun getStore(id: Long) {
@@ -140,7 +145,7 @@ class EditStoreFragment : Fragment() {
                 textField.error = getString(R.string.helper_required)
                 //textField.editText?.requestFocus()
                 isValid = false
-            }
+            } else textField.error = null
         }
 
         if (!isValid) Snackbar.make(mBinding.root,
