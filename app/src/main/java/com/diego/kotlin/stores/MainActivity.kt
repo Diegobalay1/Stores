@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.diego.kotlin.stores.databinding.ActivityMainBinding
@@ -142,9 +143,14 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     }
 
     private fun goToWebsite(website: String) {
+
         if (website.isEmpty()) {
             Toast.makeText(this, R.string.main_error_no_website, Toast.LENGTH_LONG).show()
-        } else {
+        }
+        else if (!URLUtil.isValidUrl(website)) {
+            Toast.makeText(this, R.string.main_error_no_format_website, Toast.LENGTH_LONG).show()
+        }
+        else {
             val websiteIntent = Intent().apply {
                 action = Intent.ACTION_VIEW
                 data = Uri.parse(website)
